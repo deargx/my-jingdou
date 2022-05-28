@@ -1,43 +1,43 @@
 //1 0,8-18/3 * * * m_jx_factory_commodity.js
 //问题反馈:https://t.me/Wall_E_Channel
-const {Env} = require('./magic');
+const { Env } = require('./utils/magic');
 const $ = new Env('M京喜工厂商品');
 $.logic = async function () {
-    let {commodityList} = await GetCommodityList();
-    for (let i = 0; i < commodityList.length; i++) {
-        let data = await GetCommodityDetails(commodityList[i].commodityId);
-        let s = '';
-        let hb = data.description.match(/红包[0-9]+(\.?[0-9]+)?元/g)
-            || data.description.match(/以[0-9]+(\.?[0-9]+)?元/g);
-        if (hb) {
-            s = hb[0].replace('以', '红包');
-        } else {
-            let ms = data.description.match(/支付[0-9]+(\.?[0-9]+)?元/g);
-            if (ms?.length === 1) {
-                s = ms[0]
-            } else {
-                s = '';
-            }
-        }
-        console.log(`${data.name} ${s}`)
-        if (s) {
-            if (s.match(/[0-9]+(\.?[0-9]+)?/g)[0] * 1 < 10) {
-                $.putMsg(`【${data.name}】 ${s}`)
-            }
-        } else {
-            $.putMsg(`【${data.name}】${data.name}`)
-        }
-
-        await $.wait(2000, 3000)
+  let { commodityList } = await GetCommodityList();
+  for (let i = 0; i < commodityList.length; i++) {
+    let data = await GetCommodityDetails(commodityList[i].commodityId);
+    let s = '';
+    let hb = data.description.match(/红包[0-9]+(\.?[0-9]+)?元/g)
+      || data.description.match(/以[0-9]+(\.?[0-9]+)?元/g);
+    if (hb) {
+      s = hb[0].replace('以', '红包');
+    } else {
+      let ms = data.description.match(/支付[0-9]+(\.?[0-9]+)?元/g);
+      if (ms?.length === 1) {
+        s = ms[0]
+      } else {
+        s = '';
+      }
     }
+    console.log(`${data.name} ${s}`)
+    if (s) {
+      if (s.match(/[0-9]+(\.?[0-9]+)?/g)[0] * 1 < 10) {
+        $.putMsg(`【${data.name}】 ${s}`)
+      }
+    } else {
+      $.putMsg(`【${data.name}】${data.name}`)
+    }
+
+    await $.wait(2000, 3000)
+  }
 }
 
 $.run({
-    bot: true,
-    delimiter: '\n',
-    whitelist: [1]
+  bot: true,
+  delimiter: '\n',
+  whitelist: [1]
 }).catch(
-    reason => $.log(reason));
+  reason => $.log(reason));
 
 /**
  * 商品列表
@@ -46,27 +46,27 @@ $.run({
 )} catch (e) {}
  */
 // noinspection DuplicatedCode
-async function GetCommodityList() {
-    let url = `https://m.jingxi.com/dreamfactory/diminfo/GetCommodityList?zone=dream_factory&flag=2&pageNo=1&pageSize=12&_time=1636619666773&_ts=1636619666773&_=1636619666773&sceneval=2&g_login_type=1&callback=jsonpCBKKK&g_ty=ls`;
-    // noinspection DuplicatedCode
-    let headers = {
-        'Accept': '*/*',
-        'Connection': 'keep-alive',
-        'Referer': 'https://st.jingxi.com/pingou/dream_factory/index.html',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Host': 'm.jingxi.com',
-        'Accept-Language': 'zh-cn',
-        'Cookie': $.cookie
-    }
-    // noinspection DuplicatedCode
-    headers['User-Agent'] = `jdpingou;iPhone;5.2.2;14.3;${$.randomString(
-        40)};network/wifi;model/iPhone12,1;appBuild/100630;ADID/00000000-0000-0000-0000-000000000000;supportApplePay/1;hasUPPay/0;pushNoticeIsOpen/0;hasOCPay/0;supportBestPay/0;session/1;pap/JA2019_3111789;brand/apple;supportJDSHWK/1;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148`
-    let data = await $.get(url, headers)
-    // noinspection DuplicatedCode
-    if (data?.ret === 0) {
-        return data?.data
-    }
-    return false;
+async function GetCommodityList () {
+  let url = `https://m.jingxi.com/dreamfactory/diminfo/GetCommodityList?zone=dream_factory&flag=2&pageNo=1&pageSize=12&_time=1636619666773&_ts=1636619666773&_=1636619666773&sceneval=2&g_login_type=1&callback=jsonpCBKKK&g_ty=ls`;
+  // noinspection DuplicatedCode
+  let headers = {
+    'Accept': '*/*',
+    'Connection': 'keep-alive',
+    'Referer': 'https://st.jingxi.com/pingou/dream_factory/index.html',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Host': 'm.jingxi.com',
+    'Accept-Language': 'zh-cn',
+    'Cookie': $.cookie
+  }
+  // noinspection DuplicatedCode
+  headers['User-Agent'] = `jdpingou;iPhone;5.2.2;14.3;${$.randomString(
+    40)};network/wifi;model/iPhone12,1;appBuild/100630;ADID/00000000-0000-0000-0000-000000000000;supportApplePay/1;hasUPPay/0;pushNoticeIsOpen/0;hasOCPay/0;supportBestPay/0;session/1;pap/JA2019_3111789;brand/apple;supportJDSHWK/1;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148`
+  let data = await $.get(url, headers)
+  // noinspection DuplicatedCode
+  if (data?.ret === 0) {
+    return data?.data
+  }
+  return false;
 }
 
 /**
@@ -76,22 +76,22 @@ async function GetCommodityList() {
 )} catch (e) {}
  */
 // noinspection DuplicatedCode
-async function GetCommodityDetails(commodityId) {
-    let url = `https://m.jingxi.com/dreamfactory/diminfo/GetCommodityDetails?zone=dream_factory&commodityId=${commodityId}&_time=1636437544857&_ts=1636437544857&_=1636437544857&sceneval=2&g_login_type=1&callback=jsonpCBKWWW&g_ty=ls`;
-    // noinspection DuplicatedCode
-    let headers = {
-        'Accept': '*/*',
-        'Connection': 'keep-alive',
-        'Referer': 'https://st.jingxi.com/pingou/dream_factory/index.html',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Host': 'm.jingxi.com',
-        'Accept-Language': 'zh-cn',
-        'Cookie': $.cookie
-    }
-    // noinspection DuplicatedCode
-    headers['User-Agent'] = `jdpingou;iPhone;5.2.2;14.3;${$.randomString(
-        40)};network/wifi;model/iPhone12,1;appBuild/100630;ADID/00000000-0000-0000-0000-000000000000;supportApplePay/1;hasUPPay/0;pushNoticeIsOpen/0;hasOCPay/0;supportBestPay/0;session/1;pap/JA2019_3111789;brand/apple;supportJDSHWK/1;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148`
-    let data = await $.get(url, headers)
-    // noinspection DuplicatedCode
-    return data?.data?.commodityList?.[0]
+async function GetCommodityDetails (commodityId) {
+  let url = `https://m.jingxi.com/dreamfactory/diminfo/GetCommodityDetails?zone=dream_factory&commodityId=${commodityId}&_time=1636437544857&_ts=1636437544857&_=1636437544857&sceneval=2&g_login_type=1&callback=jsonpCBKWWW&g_ty=ls`;
+  // noinspection DuplicatedCode
+  let headers = {
+    'Accept': '*/*',
+    'Connection': 'keep-alive',
+    'Referer': 'https://st.jingxi.com/pingou/dream_factory/index.html',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Host': 'm.jingxi.com',
+    'Accept-Language': 'zh-cn',
+    'Cookie': $.cookie
+  }
+  // noinspection DuplicatedCode
+  headers['User-Agent'] = `jdpingou;iPhone;5.2.2;14.3;${$.randomString(
+    40)};network/wifi;model/iPhone12,1;appBuild/100630;ADID/00000000-0000-0000-0000-000000000000;supportApplePay/1;hasUPPay/0;pushNoticeIsOpen/0;hasOCPay/0;supportBestPay/0;session/1;pap/JA2019_3111789;brand/apple;supportJDSHWK/1;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148`
+  let data = await $.get(url, headers)
+  // noinspection DuplicatedCode
+  return data?.data?.commodityList?.[0]
 }
